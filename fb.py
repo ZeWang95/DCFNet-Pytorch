@@ -1,3 +1,7 @@
+'''
+The code is directly translated from the matlab code 
+https://github.com/xycheng/DCFNet/blob/master/calculate_FB_bases.m
+'''
 import numpy as np 
 from scipy import special
 import pdb
