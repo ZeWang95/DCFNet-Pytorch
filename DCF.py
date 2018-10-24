@@ -118,8 +118,8 @@ class Conv_DCF(nn.Module):
 
         feature = feature.view(
             FE_SIZE[0], FE_SIZE[1]*self.num_bases, 
-            (FE_SIZE[2]-2*self.edge+2*self.padding)/self.stride, 
-            (FE_SIZE[3]-2*self.edge+2*self.padding)/self.stride)
+            int((FE_SIZE[2]-2*self.edge+2*self.padding)/self.stride), 
+            int((FE_SIZE[3]-2*self.edge+2*self.padding)/self.stride))
 
         feature_out = F.conv2d(feature, self.weight, self.bias, 1, 0)
 
