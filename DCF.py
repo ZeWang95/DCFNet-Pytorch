@@ -66,7 +66,7 @@ class Conv_DCF(nn.Module):
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.kernel_size = kernel_size
-        self.edge = (kernel_size-1)/2
+        # self.edge = (kernel_size-1)/2
         self.stride = stride
         self.padding = padding
         self.kernel_list = {}
@@ -118,8 +118,8 @@ class Conv_DCF(nn.Module):
 
         feature = feature.view(
             FE_SIZE[0], FE_SIZE[1]*self.num_bases, 
-            int((FE_SIZE[2]-2*self.edge+2*self.padding)/self.stride), 
-            int((FE_SIZE[3]-2*self.edge+2*self.padding)/self.stride))
+            int((FE_SIZE[2]-self.kernel_size+2*self.padding)/self.stride+1), 
+            int((FE_SIZE[2]-self.kernel_size+2*self.padding)/self.stride+1))
 
         feature_out = F.conv2d(feature, self.weight, self.bias, 1, 0)
 
