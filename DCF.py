@@ -61,7 +61,7 @@ class Conv_DCF(nn.Module):
 
     """
     def __init__(self, in_channels, out_channels, kernel_size, stride=1, padding=0, 
-        num_bases=6, bias=True,  base_grad=False, initializer='FB'):
+        num_bases=6, bias=True,  bases_grad=True, initializer='FB'):
         super(Conv_DCF, self).__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
@@ -88,7 +88,12 @@ class Conv_DCF(nn.Module):
         else:
             base_np = np.random.random((num_bases, 1, kernel_size, kernel_size))-0.5
 
-        self.bases = Parameter(torch.Tensor(base_np), requires_grad=base_grad)
+        base_np = np.array(base_np, np.float32)
+
+        if bases_grad:
+            self.bases = Parameter(torch.tensor(base_np), requires_grad=bases_grad)
+        else:
+            self.register_buffer('bases', torch.tensor(base_np, requires_grad=False).float())
 
 
         self.weight = Parameter(torch.Tensor(
@@ -115,11 +120,11 @@ class Conv_DCF(nn.Module):
 
         feature = F.conv2d(input, self.bases,
             None, self.stride, self.padding, dilation=1)
-
+        
         feature = feature.view(
             FE_SIZE[0], FE_SIZE[1]*self.num_bases, 
             int((FE_SIZE[2]-self.kernel_size+2*self.padding)/self.stride+1), 
-            int((FE_SIZE[2]-self.kernel_size+2*self.padding)/self.stride+1))
+            int((FE_SIZE[3]-self.kernel_size+2*self.padding)/self.stride+1))
 
         feature_out = F.conv2d(feature, self.weight, self.bias, 1, 0)
 

@@ -34,7 +34,7 @@ def calculate_FB_bases(L1):
 
 	kmax = 15
 
-	bessel = np.load('bessel.npy')
+	bessel = np.load('/home/jacobwang/DCF/DCFNet/bessel.npy')
 
 	B = bessel[(bessel[:,0] <=kmax) & (bessel[:,3]<= np.pi*R*truncate_freq_factor)]
 
