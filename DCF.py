@@ -61,7 +61,7 @@ class Conv_DCF(nn.Module):
 
     """
     def __init__(self, in_channels, out_channels, kernel_size, stride=1, padding=0, 
-        num_bases=6, bias=True,  bases_grad=True, initializer='FB'):
+        num_bases=6, bias=True,  bases_grad=False, initializer='FB'):
         super(Conv_DCF, self).__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
