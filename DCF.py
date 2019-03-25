@@ -61,7 +61,7 @@ class Conv_DCF(nn.Module):
 
     """
     def __init__(self, in_channels, out_channels, kernel_size, stride=1, padding=0, 
-        num_bases=6, bias=True,  bases_grad=False, initializer='FB', mod='mod1'):
+        num_bases=6, bias=True,  bases_grad=False, initializer='FB', mode='mode1'):
         super(Conv_DCF, self).__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
@@ -105,7 +105,7 @@ class Conv_DCF(nn.Module):
             self.register_parameter('bias', None)
         self.reset_parameters()
 
-        if self.mod == 'mod1':
+        if self.mode == 'mode1':
             self.weight.data = self.weight.data.view(out_channels*in_channels, num_bases)
             self.bases.data = self.bases.data.view(num_bases, kernel_size*kernel_size)
 
@@ -117,7 +117,7 @@ class Conv_DCF(nn.Module):
             self.bias.data.uniform_(-stdv, stdv)
 
 
-    def forward_mod0(self, input):
+    def forward_mode0(self, input):
         FE_SIZE = input.size()
         feature_list = []
         input = input.view(FE_SIZE[0]*FE_SIZE[1], 1, FE_SIZE[2], FE_SIZE[3])
@@ -135,7 +135,7 @@ class Conv_DCF(nn.Module):
 
         return feature_out
 
-    def forward_mod1(self, input):
+    def forward_mode1(self, input):
         rec_kernel = torch.mm(self.weight, self.bases).view(self.out_channels, self.in_channels, self.kernel_size, self.kernel_size)
 
         feature = F.conv2d(input, rec_kernel,
@@ -144,7 +144,7 @@ class Conv_DCF(nn.Module):
         return feature
 
     def forward(self, input):
-        if self.mod == 'mod1':
-            return self.forward_mod1(input)
+        if self.mode == 'mode1':
+            return self.forward_mode1(input)
         else:
-            return self.forward_mod0(input)
+            return self.forward_mode0(input)
