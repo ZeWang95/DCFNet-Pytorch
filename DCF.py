@@ -96,6 +96,7 @@ class Conv_DCF(nn.Module):
             self.bases = Parameter(torch.tensor(base_np), requires_grad=bases_grad)
         else:
             self.register_buffer('bases', torch.tensor(base_np, requires_grad=False).float())
+            self.bases.data.uniform_(-1, 1)
 
 
         self.weight = Parameter(torch.Tensor(
@@ -109,7 +110,6 @@ class Conv_DCF(nn.Module):
         if self.mode == 'mode1':
             self.weight.data = self.weight.data.view(out_channels*in_channels, num_bases)
             self.bases.data = self.bases.data.view(num_bases, kernel_size*kernel_size)
-            self.bases.data.uniform_(-1, 1)
 
     def reset_parameters(self):
         stdv = 1. / math.sqrt(self.weight.size(1))
