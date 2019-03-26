@@ -5,7 +5,6 @@ import argparse
 import numpy as np
 
 from torch.autograd import Variable
-
 from torch.utils.data import DataLoader
 import torch
 from torch import nn
@@ -94,10 +93,9 @@ class Conv_DCF(nn.Module):
 
         if bases_grad:
             self.bases = Parameter(torch.tensor(base_np), requires_grad=bases_grad)
+            self.bases.data.uniform_(-1, 1)
         else:
             self.register_buffer('bases', torch.tensor(base_np, requires_grad=False).float())
-            self.bases.data.uniform_(-1, 1)
-
 
         self.weight = Parameter(torch.Tensor(
                 out_channels, in_channels*num_bases, 1, 1))
@@ -117,13 +115,11 @@ class Conv_DCF(nn.Module):
         if self.bias is not None:
             self.bias.data.uniform_(-stdv, stdv)
 
-
     def forward_mode0(self, input):
         FE_SIZE = input.size()
         feature_list = []
         input = input.view(FE_SIZE[0]*FE_SIZE[1], 1, FE_SIZE[2], FE_SIZE[3])
         
-
         feature = F.conv2d(input, self.bases,
             None, self.stride, self.padding, dilation=1)
         
