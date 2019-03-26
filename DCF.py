@@ -33,8 +33,9 @@ class Conv_DCF(nn.Module):
         stride (int, optional): Stride of the convolution. Default: 1
         padding (int, optional): Zero-padding added to both sides of
             the input. Default: 0
-        num_bases (int, optional): Number of bases for decomposition.
+        num_bases (int, optional): Number of basis elements for decomposition.
         bias (bool, optional): If ``True``, adds a learnable bias to the output. Default: ``True``
+        mode (optional): Either `mode0` for two-conv or `mode1` for reconstruction + conv.
 
     Shape:
         - Input: :math:`(N, C_{in}, H_{in}, W_{in})`
@@ -71,7 +72,7 @@ class Conv_DCF(nn.Module):
         self.padding = padding
         self.kernel_list = {}
         self.num_bases = num_bases
-        assert mode in ['mode0', 'mode1'], 'Only mod0 and mod1 are available at this moment.'
+        assert mode in ['mode0', 'mode1'], 'Only mode0 and mode1 are available at this moment.'
         self.mode = mode
 
         assert initializer in ['FB', 'random'], 'Initializer should be either FB or random, other methods are not implemented yet'
@@ -108,7 +109,7 @@ class Conv_DCF(nn.Module):
         if self.mode == 'mode1':
             self.weight.data = self.weight.data.view(out_channels*in_channels, num_bases)
             self.bases.data = self.bases.data.view(num_bases, kernel_size*kernel_size)
-
+            self.bases.data.uniform_(-1, 1)
 
     def reset_parameters(self):
         stdv = 1. / math.sqrt(self.weight.size(1))
