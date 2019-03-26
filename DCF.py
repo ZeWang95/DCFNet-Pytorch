@@ -71,8 +71,8 @@ class Conv_DCF(nn.Module):
         self.padding = padding
         self.kernel_list = {}
         self.num_bases = num_bases
-        assert mod in ['mod0', 'mod1'], 'Only mod0 and mod1 are available at this moment.'
-        self.mod = mod
+        assert mode in ['mode0', 'mode1'], 'Only mod0 and mod1 are available at this moment.'
+        self.mode = mode
 
         assert initializer in ['FB', 'random'], 'Initializer should be either FB or random, other methods are not implemented yet'
 
