@@ -20,6 +20,8 @@ import math
 from fb import *
 
 class Conv_DCF(nn.Module):
+    __constants__ = ['kernel_size', 'stride', 'padding', 'num_bases',
+                     'bases_grad', 'mode']
     r"""Pytorch implementation for 2D DCF Convolution operation.
     Link to ICML paper:
     https://arxiv.org/pdf/1802.04145.pdf
@@ -73,6 +75,7 @@ class Conv_DCF(nn.Module):
         self.num_bases = num_bases
         assert mode in ['mode0', 'mode1'], 'Only mode0 and mode1 are available at this moment.'
         self.mode = mode
+        self.bases_grad = bases_grad
 
         assert initializer in ['FB', 'random'], 'Initializer should be either FB or random, other methods are not implemented yet'
 
@@ -93,7 +96,8 @@ class Conv_DCF(nn.Module):
 
         if bases_grad:
             self.bases = Parameter(torch.tensor(base_np), requires_grad=bases_grad)
-            self.bases.data.uniform_(-1, 1)
+            self.bases.data.normal_(0, 1.0)
+            # self.bases.data.uniform_(-1, 1)
         else:
             self.register_buffer('bases', torch.tensor(base_np, requires_grad=False).float())
 
@@ -111,9 +115,11 @@ class Conv_DCF(nn.Module):
 
     def reset_parameters(self):
         stdv = 1. / math.sqrt(self.weight.size(1))
-        self.weight.data.uniform_(-stdv, stdv)
+        # self.weight.data.uniform_(-stdv, stdv)
+        self.weight.data.normal_(0, stdv)
         if self.bias is not None:
-            self.bias.data.uniform_(-stdv, stdv)
+            # self.bias.data.uniform_(-stdv, stdv)
+            self.bias.data.zero_()
 
     def forward_mode0(self, input):
         FE_SIZE = input.size()
@@ -145,3 +151,7 @@ class Conv_DCF(nn.Module):
             return self.forward_mode1(input)
         else:
             return self.forward_mode0(input)
+
+    def extra_repr(self):
+        return 'kernel_size={kernel_size}, stride={stride}, padding={padding}, num_bases={num_bases}' \
+            ', bases_grad={bases_grad}, mode={mode}'.format(**self.__dict__)
