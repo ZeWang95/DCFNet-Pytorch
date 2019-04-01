@@ -118,7 +118,7 @@ class Conv_DCF(nn.Module):
     def reset_parameters(self):
         stdv = 1. / math.sqrt(self.weight.size(1))
         # self.weight.data.uniform_(-stdv, stdv)
-        self.weight.data.normal_(0, stdv)
+        self.weight.data.normal_(0, stdv) #Normal works better, working on more robust initializations
         if self.bias is not None:
             # self.bias.data.uniform_(-stdv, stdv)
             self.bias.data.zero_()
