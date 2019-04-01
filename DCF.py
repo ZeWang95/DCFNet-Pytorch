@@ -11,7 +11,6 @@ from torch import nn
 
 import torch.nn.functional as F
 import pdb
-import cv2
 
 import time
 
@@ -20,8 +19,6 @@ import math
 from fb import *
 
 class Conv_DCF(nn.Module):
-    __constants__ = ['kernel_size', 'stride', 'padding', 'num_bases',
-                     'bases_grad', 'mode']
     r"""Pytorch implementation for 2D DCF Convolution operation.
     Link to ICML paper:
     https://arxiv.org/pdf/1802.04145.pdf
@@ -62,6 +59,8 @@ class Conv_DCF(nn.Module):
         >>> output = m(input)
 
     """
+    __constants__ = ['kernel_size', 'stride', 'padding', 'num_bases',
+                     'bases_grad', 'mode']
     def __init__(self, in_channels, out_channels, kernel_size, stride=1, padding=0, 
         num_bases=6, bias=True,  bases_grad=False, initializer='FB', mode='mode1'):
         super(Conv_DCF, self).__init__()
@@ -112,6 +111,9 @@ class Conv_DCF(nn.Module):
         if self.mode == 'mode1':
             self.weight.data = self.weight.data.view(out_channels*in_channels, num_bases)
             self.bases.data = self.bases.data.view(num_bases, kernel_size*kernel_size)
+            self.forward = self.forward_mode1
+        else:
+            self.forward = self.forward_mode0
 
     def reset_parameters(self):
         stdv = 1. / math.sqrt(self.weight.size(1))
@@ -145,12 +147,6 @@ class Conv_DCF(nn.Module):
             None, self.stride, self.padding, dilation=1)
         
         return feature
-
-    def forward(self, input):
-        if self.mode == 'mode1':
-            return self.forward_mode1(input)
-        else:
-            return self.forward_mode0(input)
 
     def extra_repr(self):
         return 'kernel_size={kernel_size}, stride={stride}, padding={padding}, num_bases={num_bases}' \
