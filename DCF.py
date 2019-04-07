@@ -144,7 +144,7 @@ class Conv_DCF(nn.Module):
         rec_kernel = torch.mm(self.weight, self.bases).view(self.out_channels, self.in_channels, self.kernel_size, self.kernel_size)
 
         feature = F.conv2d(input, rec_kernel,
-            None, self.stride, self.padding, dilation=1)
+            self.bias, self.stride, self.padding, dilation=1)
         
         return feature
 
