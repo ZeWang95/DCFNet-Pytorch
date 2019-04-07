@@ -62,7 +62,7 @@ class Conv_DCF(nn.Module):
     __constants__ = ['kernel_size', 'stride', 'padding', 'num_bases',
                      'bases_grad', 'mode']
     def __init__(self, in_channels, out_channels, kernel_size, stride=1, padding=0, 
-        num_bases=6, bias=True,  bases_grad=False, initializer='FB', mode='mode1'):
+        num_bases=6, bias=True,  bases_grad=False, dilation=1, initializer='FB', mode='mode1'):
         super(Conv_DCF, self).__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
@@ -75,6 +75,7 @@ class Conv_DCF(nn.Module):
         assert mode in ['mode0', 'mode1'], 'Only mode0 and mode1 are available at this moment.'
         self.mode = mode
         self.bases_grad = bases_grad
+        self.dilation = dilation
 
         assert initializer in ['FB', 'random'], 'Initializer should be either FB or random, other methods are not implemented yet'
 
@@ -129,7 +130,7 @@ class Conv_DCF(nn.Module):
         input = input.view(FE_SIZE[0]*FE_SIZE[1], 1, FE_SIZE[2], FE_SIZE[3])
         
         feature = F.conv2d(input, self.bases,
-            None, self.stride, self.padding, dilation=1)
+            None, self.stride, self.padding, dilation=self.dilation)
         
         feature = feature.view(
             FE_SIZE[0], FE_SIZE[1]*self.num_bases, 
@@ -144,7 +145,7 @@ class Conv_DCF(nn.Module):
         rec_kernel = torch.mm(self.weight, self.bases).view(self.out_channels, self.in_channels, self.kernel_size, self.kernel_size)
 
         feature = F.conv2d(input, rec_kernel,
-            self.bias, self.stride, self.padding, dilation=1)
+            self.bias, self.stride, self.padding, dilation=self.dilation)
         
         return feature
 
