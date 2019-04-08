@@ -62,7 +62,7 @@ class Conv_DCF(nn.Module):
     __constants__ = ['kernel_size', 'stride', 'padding', 'num_bases',
                      'bases_grad', 'mode']
     def __init__(self, in_channels, out_channels, kernel_size, stride=1, padding=0, 
-        num_bases=6, bias=True,  bases_grad=False, dilation=1, initializer='FB', mode='mode1'):
+        num_bases=-1, bias=True,  bases_grad=False, dilation=1, initializer='FB', mode='mode1'):
         super(Conv_DCF, self).__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
@@ -85,14 +85,17 @@ class Conv_DCF(nn.Module):
             base_np, _, _ = calculate_FB_bases(int((kernel_size-1)/2))
             if num_bases > base_np.shape[1]:
                 raise Exception('The maximum number of bases for kernel size = %d is %d' %(kernel_size, base_np.shape[1]))
-            base_np = base_np[:, :num_bases]
+            elif num_bases == -1:
+                num_bases = base_np.shape[1]
+            else:
+                base_np = base_np[:, :num_bases]
             base_np = base_np.reshape(kernel_size, kernel_size, num_bases)
-            base_np = np.expand_dims(base_np.transpose(2,0,1), 1)
+            base_np = np.array(np.expand_dims(base_np.transpose(2,0,1), 1), np.float32)
 
         else:
-            base_np = np.random.random((num_bases, 1, kernel_size, kernel_size))-0.5
-
-        base_np = np.array(base_np, np.float32)
+            if num_bases <= 0:
+                raise Exception('Number of basis elements must be positive when initialized randomly.')
+            base_np = np.random.randn(num_bases, 1, kernel_size, kernel_size)
 
         if bases_grad:
             self.bases = Parameter(torch.tensor(base_np), requires_grad=bases_grad)
