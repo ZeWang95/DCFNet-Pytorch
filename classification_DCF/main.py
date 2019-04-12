@@ -25,7 +25,7 @@ parser.add_argument('--gpu', default='0', help='GPU to use [default: GPU 0]')
 parser.add_argument('--log_dir', default='log1', help='Log dir [default: log]')
 parser.add_argument('--dataset', default='cifar', help='Log dir [default: log]')
 parser.add_argument('--batch_size', type=int, default=32, help='Batch Size during training [default: 32]')
-parser.add_argument('--optimizer', default='sgd', help='adam or momentum [default: adam]')
+parser.add_argument('--optimizer', default='nesterov', help='adam or momentum [default: adam]')
 
 args = parser.parse_args()
 
@@ -120,28 +120,17 @@ else:
 
 # Model
 print('==> Building model..')
-# net = VGG('VGG19')
+
 # net = ResNet18()
 # net = ResNet_DCF18(bases_grad=False)
-# net = VGG_DCF('VGG16', bases_grad=False, num_class=NUM_CLASS)
+
 # net = VGG('VGG16', num_class=NUM_CLASS)
-# net = ResNet_DCF18(bases_grad=False)#1
-# net = PreActResNet18()
-# net = GoogLeNet()
+net = VGG_DCF('VGG16', bases_grad=False, num_class=NUM_CLASS)
 
-net = LeNet()
+# net = LeNet()
 # net = LeNet_DCF()
-# net = DenseNet121()
-# net = DenseNet_DCF121(False)
-# net = DenseNet_DCF121(True)
 
 
-# net = ResNeXt29_2x64d()
-# net = MobileNet()
-# net = MobileNetV2()
-# net = DPN92()
-# net = ShuffleNetG2()
-# net = SENet18()
 print(net)
 net = net.to(device)
 if device == 'cuda':
