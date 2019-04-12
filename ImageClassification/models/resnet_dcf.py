@@ -10,7 +10,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import sys
-sys.path.append('/home/jacobwang/DCF/DCFNet')
+from config import *
+sys.path.append(DCF_root)
 from DCF import *
 
 class BasicBlock(nn.Module):

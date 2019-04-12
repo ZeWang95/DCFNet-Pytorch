@@ -121,15 +121,15 @@ else:
 # Model
 print('==> Building model..')
 
-# net = ResNet18()
-# net = ResNet_DCF18(bases_grad=False)
+# net = ResNet18(num_class=NUM_CLASS)
+# net = ResNet_DCF18(num_class=NUM_CLASS, bases_grad=False)
 
 # net = VGG('VGG16', num_class=NUM_CLASS)
 net = VGG_DCF('VGG16', bases_grad=False, num_class=NUM_CLASS)
 
 # net = LeNet()
 # net = LeNet_DCF()
-
+# Please try not to train LeNet on CUB, it will make him suffers a lot...
 
 print(net)
 net = net.to(device)
