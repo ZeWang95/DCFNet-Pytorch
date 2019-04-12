@@ -5,6 +5,7 @@ https://github.com/xycheng/DCFNet/blob/master/calculate_FB_bases.m
 import numpy as np 
 from scipy import special
 import pdb
+from config import *
 
 def cart2pol(x, y):
     rho = np.sqrt(x**2 + y**2)
@@ -34,7 +35,7 @@ def calculate_FB_bases(L1):
 
 	kmax = 15
 
-	bessel = np.load('/home/jacobwang/DCF/DCFNet/bessel.npy')
+	bessel = np.load(path_to_bessel)
 
 	B = bessel[(bessel[:,0] <=kmax) & (bessel[:,3]<= np.pi*R*truncate_freq_factor)]
 
