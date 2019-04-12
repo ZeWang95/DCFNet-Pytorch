@@ -11,7 +11,7 @@ For details please refer to [paper](https://arxiv.org/pdf/1802.04145.pdf).
 Modify config.py first before running any experiments.
 
 ## Image Classification
-The classification_DCF folder contains code for training DCFNet for image classification.
+The ImageClassification folder contains code for training DCFNet for image classification.
 
 Note that this repository does not intend to reproduce the exactly the same results reported in the original paper, since the baseline performances are higher in our settings. And a ~1.5% accuracy growth is witnessed when using filter decomposition on CIFAR-10. 
 
