@@ -8,7 +8,7 @@ CIFAR-10
 
 CUB-200 bird recognition dataset
 
-###Networks
+### Networks
 
 VGG
 
@@ -16,7 +16,7 @@ ResNet
 
 LeNet
 
-More network architectures coming soon.
+More network architectures are coming soon.
 
 ## Accuracy
 Update soon

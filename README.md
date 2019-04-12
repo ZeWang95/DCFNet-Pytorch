@@ -13,9 +13,23 @@ Modify config.py first before running any experiments.
 ## Image Classification
 The classification_DCF folder contains code for training DCFNet for image classification.
 
-Note that this repository does not intend to reproduce the exact same results reported in the original paper, since the baseline performances are higher in our settings. And a ~1.5% accuracy growth is witnessed when using filter decomposition. 
+Note that this repository does not intend to reproduce the exactly the same results reported in the original paper, since the baseline performances are higher in our settings. And a ~1.5% accuracy growth is witnessed when using filter decomposition on CIFAR-10. 
 
 We will update more results soon.
+
+## Citing DCFNet
+
+If you find this repo is helpful for your research, please kindly consider citing the paper as well.
+
+
+```latex
+@article{qiu2018dcfnet,
+	title={{DCFNet}: Deep Neural Network with Decomposed Convolutional Filters},
+	author={Qiu, Qiang and Cheng, Xiuyuan and Calderbank, Robert and Sapiro, Guillermo},
+	journal={International Conference on Machine Learning},
+	year={2018}
+}
+```
 
 ## Acknowledgements
 
