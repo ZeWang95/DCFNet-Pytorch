@@ -19,7 +19,7 @@ We will update more results soon.
 
 ## Citing DCFNet
 
-If you find this repo is helpful for your research, please kindly consider citing the paper as well.
+If you find this repo helpful for your research, please kindly consider citing the paper.
 
 
 ```latex

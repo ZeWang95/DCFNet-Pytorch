@@ -1,5 +1,4 @@
-# Training DCFNet for image classfiication
-
+# Training DCFNet for Image Classification
 
 ## Supports
 ### Datasets
