@@ -2,7 +2,7 @@
 
 This repository is the pytorch implementation for ICML 2018 paper DCFNet: Deep Neural Network with Decomposed Convolutional Filters
 
-Note that this web page is still under construction (as life should be).
+***Note that this web page is still under construction (as life should be).*** (Stolen from my big boss [Prof. Sapiro](http://sapirolab.pratt.duke.edu/)'s website.)
 
 For details please refer to [paper](https://arxiv.org/pdf/1802.04145.pdf).
 
