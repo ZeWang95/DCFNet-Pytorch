@@ -71,7 +71,6 @@ class Conv_DCF(nn.Module):
         self.stride = stride
         self.padding = padding
         self.kernel_list = {}
-        self.num_bases = num_bases
         assert mode in ['mode0', 'mode1'], 'Only mode0 and mode1 are available at this moment.'
         self.mode = mode
         self.bases_grad = bases_grad
@@ -111,10 +110,10 @@ class Conv_DCF(nn.Module):
         else:
             self.register_parameter('bias', None)
         self.reset_parameters()
-
+        self.num_bases = num_bases
         if self.mode == 'mode1':
-            self.weight.data = self.weight.data.view(out_channels*in_channels, num_bases)
-            self.bases.data = self.bases.data.view(num_bases, kernel_size*kernel_size)
+            self.weight.data = self.weight.data.view(out_channels, in_channels, num_bases)
+            self.bases.data = self.bases.data.view(num_bases, kernel_size, kernel_size)
             self.forward = self.forward_mode1
         else:
             self.forward = self.forward_mode0
@@ -128,24 +127,25 @@ class Conv_DCF(nn.Module):
             self.bias.data.zero_()
 
     def forward_mode0(self, input):
-        FE_SIZE = input.size()
+        N, C, H, W = input.size()
         feature_list = []
-        input = input.view(FE_SIZE[0]*FE_SIZE[1], 1, FE_SIZE[2], FE_SIZE[3])
+        input = input.view(N*C, 1, H, W)
         
         feature = F.conv2d(input, self.bases,
             None, self.stride, self.padding, dilation=self.dilation)
         
+        H = int((H-self.kernel_size+2*self.padding)/self.stride+1)
+        W = int((W-self.kernel_size+2*self.padding)/self.stride+1)
+
         feature = feature.view(
-            FE_SIZE[0], FE_SIZE[1]*self.num_bases, 
-            int((FE_SIZE[2]-self.kernel_size+2*self.padding)/self.stride+1), 
-            int((FE_SIZE[3]-self.kernel_size+2*self.padding)/self.stride+1))
+            N, C*self.num_bases, H, W)
 
         feature_out = F.conv2d(feature, self.weight, self.bias, 1, 0)
 
         return feature_out
 
     def forward_mode1(self, input):
-        rec_kernel = torch.mm(self.weight, self.bases).view(self.out_channels, self.in_channels, self.kernel_size, self.kernel_size)
+        rec_kernel = torch.einsum('abc,cdf->abdf', self.weight, self.bases)
 
         feature = F.conv2d(input, rec_kernel,
             self.bias, self.stride, self.padding, dilation=self.dilation)
@@ -155,3 +155,11 @@ class Conv_DCF(nn.Module):
     def extra_repr(self):
         return 'kernel_size={kernel_size}, stride={stride}, padding={padding}, num_bases={num_bases}' \
             ', bases_grad={bases_grad}, mode={mode}'.format(**self.__dict__)
+
+
+if __name__ == '__main__':
+    conv = Conv_DCF(10, 20, 3)
+    conv2 = Conv_DCF(10, 20, 3, mode='mode0')
+    data = torch.randn(2, 10, 16, 16)
+    print(conv(data).shape)
+    print(conv2(data).shape)

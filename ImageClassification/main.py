@@ -38,8 +38,8 @@ LOG_DIR = args.log_dir
 name_file = sys.argv[0]
 if os.path.exists(LOG_DIR): shutil.rmtree(LOG_DIR)
 os.mkdir(LOG_DIR)
-os.mkdir(LOG_DIR + '/train_img')
-os.mkdir(LOG_DIR + '/test_img')
+# os.mkdir(LOG_DIR + '/train_img')
+# os.mkdir(LOG_DIR + '/test_img')
 os.mkdir(LOG_DIR + '/files')
 os.system('cp %s %s' % (name_file, LOG_DIR))
 os.system('cp %s %s' % ('*.py', os.path.join(LOG_DIR, 'files')))
