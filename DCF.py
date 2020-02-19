@@ -1,11 +1,5 @@
-import datetime
-import os, sys
-import random
-import argparse
 import numpy as np
 
-from torch.autograd import Variable
-from torch.utils.data import DataLoader
 import torch
 from torch import nn
 
@@ -67,7 +61,6 @@ class Conv_DCF(nn.Module):
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.kernel_size = kernel_size
-        # self.edge = (kernel_size-1)/2
         self.stride = stride
         self.padding = padding
         self.kernel_list = {}
@@ -137,8 +130,7 @@ class Conv_DCF(nn.Module):
         H = int((H-self.kernel_size+2*self.padding)/self.stride+1)
         W = int((W-self.kernel_size+2*self.padding)/self.stride+1)
 
-        feature = feature.view(
-            N, C*self.num_bases, H, W)
+        feature = feature.view(N, C*self.num_bases, H, W)
 
         feature_out = F.conv2d(feature, self.weight, self.bias, 1, 0)
 
